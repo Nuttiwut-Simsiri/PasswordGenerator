@@ -34,8 +34,8 @@ const HomePage = () => {
     const handleCopy = async () => {
         await navigator.clipboard.writeText(pw);
         toast.success('Copy Sucessfully!', {
-            position: "bottom-right",
-            autoClose: 1000,
+            position: "top-right",
+            autoClose: 700,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -55,7 +55,7 @@ const HomePage = () => {
     return (
         <div className='flex justify-center bg-slate-900 w-full h-screen text-white'>
             <ToastContainer
-                position="bottom-right"
+                position="top-right"
                 autoClose={500}
                 hideProgressBar={false}
                 newestOnTop={false}

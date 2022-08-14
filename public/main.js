@@ -9,9 +9,9 @@ function createWindow() {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 550,
-    height: 550,
+    height: 600,
     maxWidth:700,
-    maxHeight: 600,
+    maxHeight: 700,
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true

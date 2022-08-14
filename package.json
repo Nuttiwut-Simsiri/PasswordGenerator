@@ -2,6 +2,8 @@
   "name": "password-generator",
   "version": "0.1.0",
   "private": true,
+  "author": "NothamKiller",
+  "license": "MIT",
   "dependencies": {
     "@electron/remote": "^2.0.8",
     "@testing-library/jest-dom": "^5.16.5",
@@ -31,13 +33,24 @@
   },
   "build": {
     "extends": null,
-    "appId": "com.example.electron-cra",
+    "appId": "com.PasswordGenerator-nothamkiller.app",
+    "productName": "PasswordGenerator",
     "files": [
       "dist/**/*",
       "build/**/*",
       "node_modules/**/*",
       "package.json"
     ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "target": "dmg"
+    },
     "directories": {
       "buildResources": "assets"
     }
@@ -63,6 +76,8 @@
   "devDependencies": {
     "autoprefixer": "^10.4.8",
     "postcss": "^8.4.16",
-    "tailwindcss": "^3.1.8"
+    "tailwindcss": "^3.1.8",
+    "electron": "^20.0.2",
+    "electron-builder": "^23.3.3"
   }
 }
