@@ -1,13 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState, version } from 'react'
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
 const HomePage = () => {
-
+    const [genPassword, setGenPassword] = useState("")
     const [pwLen, setPwLen] = useState(16)
     const [spChar, setSpChar] = useState("={@%+!#$/^?&~-_")
-    const [pw, setPw] = useState("")
+    const [appVersion, setAppVersion] = useState("")
+
+
+
+    useEffect(() => {
+        const getAppVer = async () => {
+            let AppVer = await window.Api.getAppVersion();
+            console.log(AppVer);
+            setAppVersion(AppVer);
+        }
+        getAppVer();
+    }, [])
+
 
     const create_pw = (pw_len, characters) => {
         var password = '';
@@ -31,8 +43,9 @@ const HomePage = () => {
         }
 
     }
+
     const handleCopy = async () => {
-        await navigator.clipboard.writeText(pw);
+        await navigator.clipboard.writeText(genPassword);
         toast.success('Copy Sucessfully!', {
             position: "top-right",
             autoClose: 700,
@@ -48,56 +61,71 @@ const HomePage = () => {
         const lowercase = "abcdefghijklmnopqrstuvwxyz";
         const uppercase = lowercase.toLocaleUpperCase();
         const number = "0123456789";
-        setPw(create_pw(pwLen, lowercase + number + uppercase + spChar));
+        setGenPassword(create_pw(pwLen, lowercase + number + uppercase + spChar));
     }
 
+    const goToRegister = () => {
+        window.Api.saveCurrentPassword(genPassword);
+        window.location.href = "/register";
+
+    }
 
     return (
-        <div className='flex justify-center bg-slate-900 w-full h-screen text-white'>
-            <ToastContainer
-                position="top-right"
-                autoClose={500}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                theme="dark"
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-            />
-            <div className='flex flex-col mt-12 w-10/12 items-center'>
-                <h1 className='text-center font-extrabold text-4xl text-green-400 mb-12'> Password Generator </h1>
-                <div className='flex w-full justify-center items-center py-2'>
-                    <div className='w-8/12'>
-                        <label className="block text-gray-300 font-bold pb-4 ml-10"> Password Length : </label>
-                    </div>
-                    <div className='w-8/12'>
-                        <input onChange={(event) => setPwLen(event.target.value)} className="w-2/5 bg-gray-200 appearance-none border-2 border-gray-200 rounded  py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-green-500" type="number" defaultValue={pwLen} />
+        <div className='flex flex-col bg-gray-900 w-full h-screen text-white'>
+            <div className='flex justify-center text-white'>
+                <ToastContainer
+                    position="top-right"
+                    autoClose={500}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    theme="dark"
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                />
 
+                <div className='flex flex-col mt-8 w-10/12 items-center'>
+                    <h1 className='text-center font-extrabold text-4xl text-green-400 mb-12'> Password Generator </h1>
+                    <div className='flex w-full justify-center items-center py-2'>
+                        <div className='w-8/12'>
+                            <label className="block text-gray-300 font-bold pb-4 ml-10"> Password Length : </label>
+                        </div>
+                        <div className='w-8/12'>
+                            <input onChange={(event) => setPwLen(event.target.value)} className="w-2/5 bg-gray-200 appearance-none border-2 border-gray-200 rounded  py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-green-500" type="number" defaultValue={pwLen} />
+                        </div>
                     </div>
-                </div>
-                <div className='flex w-full justify-center items-center py-2'>
-                    <div className='w-8/12'>
-                        <label className="block text-gray-300 font-bold self-start pb-4 ml-10"> Special Character :</label>
+                    <div className='flex w-full justify-center items-center py-2'>
+                        <div className='w-8/12'>
+                            <label className="block text-gray-300 font-bold self-start pb-4 ml-10"> Special Character :</label>
+                        </div>
+                        <div className='w-8/12'>
+                            <input onChange={(event) => setSpChar(event.target.value)} className="w-5/5 bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-green-500" type="text" defaultValue={spChar} />
+                        </div>
                     </div>
-                    <div className='w-8/12'>
-                        <input onChange={(event) => setSpChar(event.target.value)} className="w-5/5 bg-gray-200 appearance-none border-2 border-gray-200 rounded py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-green-500" type="text" defaultValue={spChar} />
+
+                    <div className='flex w-full justify-center items-center py-2 mt-5'>
+                        <button onClick={generatePassword} className="w-3/6 bg-green-500 hover:bg-green-500 text-white font-extrabold text-xl hover:text-white py-3 px-4 border border-green-500 hover:border-transparent rounded">Generate</button>
                     </div>
-                </div>
 
-                <div className='flex w-full justify-center items-center py-2 mt-5'>
-                    <button onClick={generatePassword} class="w-3/6 bg-green-500 hover:bg-green-500 text-white font-extrabold text-xl hover:text-white py-3 px-4 border border-green-500 hover:border-transparent rounded">Generate</button>
+                    <div className='flex w-full justify-center items-center py-6 mt-5 shadow-inner'>
+                        <input className="bg-gray-800 appearance-none rounded w-9/12 py-8 px-4 text-green-500 font-bold text-2xl text-center focus:outline-none" type="text" readOnly={true} defaultValue={genPassword} />
+                    </div>
+                    <div className='flex flex-col w-full justify-center items-center'>
+                        <button className="py-3 w-9/12 rounded hover:bg-gray-700 bg-transparent border border-gray-500" onClick={handleCopy} disabled={!genPassword}>Copy </button>
+                        <a href="#" className="py-3 mt-2 w-3/12 text-center underline" onClick={goToRegister}> Register </a>
+                        <a href="/mypassword" className='underline'> Show My Password </a>
+                    
                 </div>
-
-                <div className='flex w-full justify-center items-center py-6 mt-5 shadow-inner'>
-                    <input className="bg-gray-800 appearance-none rounded w-9/12 py-8 px-4 text-green-500 font-bold text-2xl text-center focus:outline-none" type="text" readOnly={true} defaultValue={pw} />
-                    <button className="ml-3 p-4 w-2/12 rounded hover:bg-gray-700 bg-transparent border border-gray-500" onClick={handleCopy} disabled={!pw}>Copy </button>
-                </div>
-
             </div>
-
+            </div>
+                    <div className='flex text-sm self-end items-end pr-3'>
+            version : <div className='underline '> {appVersion}</div>
+            </div>
+            
         </div>
+
     )
 }
 
